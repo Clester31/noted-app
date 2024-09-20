@@ -8,12 +8,6 @@ import { useAppContext } from "./context/context";
 import NewClassDisplay from "./components/home/NewClassDisplay";
 import DeleteClassDisplay from "./components/home/DeleteClassDisplay";
 
-type Cls = {
-  id: string;
-  name: string;
-  color: string;
-}
-
 export default function Home() {
   const { classList, classBoxColors, updateClassList, removeClass } = useAppContext();
 
@@ -32,10 +26,6 @@ export default function Home() {
     console.log(newClass);
     updateClassList(newClass);
   }
-
-  useEffect(() => {
-    "Change made to class list"
-  }, [classList])
 
   return (
     <div className="flex flex-row flex-wrap">

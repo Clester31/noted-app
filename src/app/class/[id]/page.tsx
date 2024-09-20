@@ -17,18 +17,20 @@ type Cls = {
 
 type Note = {
     id: string;
+    class: string;
     name: string;
+    color: string;
     content: string;
 }
 
 export default function ClassPage() {
     const { id } = useParams();
-    const { getClassById } = useAppContext();
+    const { getClassById, updateNotesList, notesList, removeNote } = useAppContext();
     const [classPage, setClassPage] = useState<Cls | null>(null);
     const [newNoteDisplay, setNewNoteDisplay] = useState<boolean>(false);
     const [deleteNoteDisplay, setDeleteNoteDisplay] = useState<boolean>(false);
-    const [notesList, setNotesList] = useState<Note[]>([]); 
     const [selectedNote, setSelectedNote] = useState<Note>();
+    const [pageColor, setPageColor] = useState<string>("");
 
     useEffect(() => {
         if (id) {
@@ -42,6 +44,12 @@ export default function ClassPage() {
         }
     }, [id, getClassById, notesList]);
 
+    useEffect(() => {
+        if (classPage) {
+            setPageColor(classPage.color);
+        }
+    }, [classPage])
+
     if (!classPage) {
         return <div>loading...</div>;
     }
@@ -49,16 +57,20 @@ export default function ClassPage() {
     const addNewNote = (id: string, name: string, content: string) => {
         const newNote = {
             id: id,
+            class: classPage.name,
             name: name,
+            color: pageColor,
             content: content
         };
-        setNotesList((prev) => [...prev, newNote]);
+        updateNotesList(newNote);
     };
 
-    const deleteNote = (noteId: string) => { // Change to accept a string
-        setDeleteNoteDisplay(false); // Hide the delete confirmation
-        setNotesList(notesList.filter((n) => n.id !== noteId)); // Filter out the note by ID
+    const deleteNote = (noteId: string) => { 
+        setDeleteNoteDisplay(false); 
+        removeNote(noteId);
     };
+
+    const filteredNotes = notesList.filter((note: Note) => note.class === classPage?.name);
 
     return (
         <div className="w-4/5 p-2 m-auto">
@@ -70,29 +82,39 @@ export default function ClassPage() {
                 />
             )}
             {deleteNoteDisplay && (
-                <DeleteNoteDisplay 
+                <DeleteNoteDisplay
                     setDeleteNoteDisplay={setDeleteNoteDisplay}
                     deleteNote={deleteNote} // Correctly pass the delete function
                     selectedNote={selectedNote} // This is fine as is
                 />
             )}
             <div>
-                <h1 className="text-6xl font-semibold">{classPage?.name}</h1>
+                <h1 className="text-4xl font-semibold">{classPage?.name}</h1>
             </div>
             <div>
-                <p className="text-2xl mt-4 p-2 rounded-xl" style={{ backgroundColor: `#${classPage.color}` }}>Existing Notes: </p>
-                {notesList.map((note) => (
-                    <div key={note.id} className="bg-zinc-700 my-4 ml-2 p-2 text-lg items-center rounded-xl">
-                        <NoteModule 
-                            note={note} 
-                            setDeleteNoteDisplay={setDeleteNoteDisplay}
-                            setSelectedNote={setSelectedNote} // Pass deleteNote function
-                        />
-                    </div>
-                ))}
+                <p className="text-2xl mt-4 p-4 rounded-xl bg-zinc-600" style={{ borderBottom: `10px solid #${pageColor}` }}>Existing Notes: </p>
+                <div className="my-6">
+                    {
+                        filteredNotes.length === 0 ?
+                            <div className="text-xl p-2 bg-zinc-700 rounded-xl">
+                                <h1>Notes are empty</h1>
+                            </div>
+                            :
+                            filteredNotes.map((note) => (
+                                <div key={note.id} className="bg-zinc-700 my-4 p-2 text-xl items-center rounded-xl">
+                                    <NoteModule
+                                        note={note}
+                                        setDeleteNoteDisplay={setDeleteNoteDisplay}
+                                        setSelectedNote={setSelectedNote}
+                                        color={pageColor}
+                                    />
+                                </div>
+                            ))}
+                </div>
+
             </div>
-            <div className="mt-4 text-2xl p-2 bg-zinc-600 w-36 text-center rounded-xl" style={{ backgroundColor: `#${classPage.color}` }}>
-                <button onClick={() => setNewNoteDisplay(!newNoteDisplay)}>New Note</button>
+            <div>
+                <button className="text-2xl p-2 bg-zinc-600 w-36 text-center rounded-xl hover:font-bold" style={{ backgroundColor: `#${pageColor}` }} onClick={() => setNewNoteDisplay(!newNoteDisplay)}>New Note</button>
             </div>
         </div>
     );
