@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import ClassBox from "./components/home/ClassBox";
 import { v4 as uuidv4 } from 'uuid';
-import test_db from './test_db'
-
-import Link from 'next/link'
 
 import { useAppContext } from "./context/context";
 import NewClassDisplay from "./components/home/NewClassDisplay";
@@ -29,8 +26,10 @@ export default function Home() {
     const newClass = {
       id: uuidv4(),
       name: className,
-      color: classColor
+      color: classColor,
+      notes: []
     }
+    console.log(newClass);
     updateClassList(newClass);
   }
 

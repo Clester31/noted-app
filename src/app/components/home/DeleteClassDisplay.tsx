@@ -1,6 +1,6 @@
 interface DeleteClassDisplayProps {
     setDeleteClassDisplay: React.Dispatch<React.SetStateAction<boolean>>;
-    removeClass: React.Dispatch<React.SetStateAction<any>>;
+    removeClass: (noteId: string) => void
     selectedClassId: string
 }
 

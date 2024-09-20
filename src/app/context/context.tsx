@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useState, createContext, useEffect } from "react";
-import test_db from "../test_db";
+import test_db from "../../../data/test_db";
 
 const AppContext = createContext<any>(null);
 
@@ -9,6 +9,13 @@ type Cls = {
     id: string;
     name: string;
     color: string;
+    notes: Note[];
+}
+
+type Note = {
+    id: string;
+    name: string;
+    content: string;
 }
 
 export const AppProvider = ({ children }: { children: React.ReactNode })=> {
@@ -27,11 +34,17 @@ export const AppProvider = ({ children }: { children: React.ReactNode })=> {
         ]
     );
 
-    const [classList, setClassList] = useState<Cls[]>([]);
+    const [classList, setClassList] = useState<Cls[]>(() => {
+        // Initialize classList from localStorage if available
+        if (typeof window !== "undefined") {
+            const storedClasses = localStorage.getItem("classList");
+            return storedClasses ? JSON.parse(storedClasses) : [];
+        }
+        return [];
+    });
 
     useEffect(() => {
-        console.log("something has happened...");
-        console.log(classList, test_db);
+        localStorage.setItem("classList", JSON.stringify(classList));
     }, [classList])
 
     const updateClassList = (newClass: Cls) => {
