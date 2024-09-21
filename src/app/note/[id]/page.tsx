@@ -3,9 +3,11 @@
 type Note = {
     id: string;
     class: string;
+    classId: string;
     name: string;
     color: string;
     content: string;
+    rawContent: string;
 }
 
 
@@ -19,12 +21,12 @@ export default function FullNote() {
     const { getNotesById, updateNote } = useAppContext();
     const[currentNotes, setCurrentNotes] = useState<Note | null>(null);
 
-    const updateNoteContent = (previewText: string) => {
+    const updateNoteContent = (previewText: string, rawText: string) => {
         if (currentNotes) {
-            const updatedNote = { ...currentNotes, content: previewText };
+            const updatedNote = { ...currentNotes, content: previewText, rawContent: rawText };
             setCurrentNotes(updatedNote);
-            updateNote(updatedNote); // Update the shared state in the context
-            console.log("Updated Content:", updatedNote.content);
+            updateNote(updatedNote);
+            window.location.href = `/class/${currentNotes.classId}`;
         }
     }
 
@@ -48,6 +50,7 @@ export default function FullNote() {
         <div>
             <h1 className="text-4xl">{currentNotes.name}</h1>
             <MarkdownEditor 
+            content={currentNotes.rawContent}
             color={currentNotes.color} 
             updateNoteContent={updateNoteContent}
             />

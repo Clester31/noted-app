@@ -6,7 +6,7 @@ export default function Navbar() {
             <h1 className="my-5">N.</h1>
             <ul>
                 <li className="cursor-pointer"><Link href={'/'}><i className="fa-solid fa-house my-5"></i></Link></li>
-                <li><i className="fa-solid fa-clock my-5"></i></li>
+                <li className="cursor-pointer"><Link href={'/history'}><i className="fa-solid fa-clock my-5"></i></Link></li>
             </ul>
         </div>
     )

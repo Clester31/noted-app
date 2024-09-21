@@ -7,10 +7,11 @@ interface DeleteClassDisplayProps {
 type Note = {
     id: string;
     class: string;
+    classId: string;
     name: string;
+    color: string;
     content: string;
 }
-
 export default function DeleteNoteDisplay({ setDeleteNoteDisplay, deleteNote, selectedNote }: DeleteClassDisplayProps) {
     const handleRemove = () => {
         setDeleteNoteDisplay(false);

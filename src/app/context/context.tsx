@@ -14,10 +14,12 @@ type Cls = {
 type Note = {
     id: string;
     class: string;
+    classId: string;
     name: string;
     color: string;
     content: string;
-};
+    rawContent: string
+}
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [classBoxColors, setClassBoxColors] = useState<string[]>([
@@ -63,7 +65,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const removeClass = (classId: string) => {
-        setClassList((prev) => prev.filter((cls) => cls.id !== classId));
+        setClassList((prevClasses) => {
+            const updatedClasses = prevClasses.filter((cls) => cls.id !== classId);
+            setNotesList((prevNotes) => prevNotes.filter((note) => note.classId !== classId));
+            return updatedClasses;
+        });
     };
 
     const updateNotesList = (newNote: Note) => {
@@ -80,8 +86,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const updateNote = (updatedNote: Note) => {
-        setNotesList((prevNotes) => 
-            prevNotes.map((note) => 
+        setNotesList((prevNotes) =>
+            prevNotes.map((note) =>
                 note.id === updatedNote.id ? updatedNote : note
             )
         );

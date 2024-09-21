@@ -35,11 +35,11 @@ export default function Home() {
           addNewClass={addNewClass}
           setNewClassDisplay={setNewClassDisplay} />
       }
-      {deleteClassDisplay && 
-        <DeleteClassDisplay 
-        setDeleteClassDisplay={setDeleteClassDisplay} 
-        removeClass={removeClass}
-        selectedClassId={selectedClassId}/>
+      {deleteClassDisplay &&
+        <DeleteClassDisplay
+          setDeleteClassDisplay={setDeleteClassDisplay}
+          removeClass={removeClass}
+          selectedClassId={selectedClassId} />
       }
       {classList.map((item, index) => {
         return (
@@ -59,7 +59,13 @@ export default function Home() {
           </div>
         );
       })}
-      <button onClick={() => setNewClassDisplay(!newClassDisplay)} className="w-64 h-32 bg-zinc-700 rounded-3xl mx-4 my-4 text-4xl"><i className="fa-solid fa-plus"></i></button>
+      <button
+        onClick={() => setNewClassDisplay(!newClassDisplay)}
+        className="w-64 h-32 bg-zinc-700 rounded-3xl mx-4 my-4 text-4xl transition-transform duration-150 ease-out hover:scale-105"
+      >
+        <i className="fa-solid fa-plus"></i>
+      </button>
+
     </div>
   );
 }

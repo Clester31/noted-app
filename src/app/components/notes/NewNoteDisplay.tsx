@@ -6,8 +6,10 @@ export default function newNoteDisplay({ setNewNoteDisplay, classColor, addNewNo
     const [noteContent, setNoteContent] = useState<string>("");
 
     const handleSubmit = () => {
+        const noteId = uuidv4();
         setNewNoteDisplay(false);
-        addNewNote(uuidv4(), noteName, noteContent)
+        addNewNote(noteId, noteName, noteContent)
+        window.location.href = `/note/${noteId}`;
     }
 
     return (

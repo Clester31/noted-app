@@ -7,6 +7,7 @@ import { useAppContext } from "@/app/context/context";
 import NewNoteDisplay from '../../components/notes/NewNoteDisplay';
 import DeleteNoteDisplay from "@/app/components/notes/DeleteNoteDisplay";
 import NoteModule from "@/app/components/notes/NoteModule";
+import getCurrentDateTime from "@/app/utility/getCurrentDateTime";
 
 type Cls = {
     id: string;
@@ -18,9 +19,11 @@ type Cls = {
 type Note = {
     id: string;
     class: string;
+    classId: string;
     name: string;
     color: string;
     content: string;
+    time: string;
 }
 
 export default function ClassPage() {
@@ -55,12 +58,15 @@ export default function ClassPage() {
     }
 
     const addNewNote = (id: string, name: string, content: string) => {
+        const time = getCurrentDateTime();
         const newNote = {
             id: id,
             class: classPage.name,
+            classId: classPage.id,
             name: name,
             color: pageColor,
-            content: content
+            content: content,
+            time: time,
         };
         updateNotesList(newNote);
     };
@@ -84,8 +90,8 @@ export default function ClassPage() {
             {deleteNoteDisplay && (
                 <DeleteNoteDisplay
                     setDeleteNoteDisplay={setDeleteNoteDisplay}
-                    deleteNote={deleteNote} // Correctly pass the delete function
-                    selectedNote={selectedNote} // This is fine as is
+                    deleteNote={deleteNote}
+                    selectedNote={selectedNote}
                 />
             )}
             <div>
@@ -114,7 +120,7 @@ export default function ClassPage() {
 
             </div>
             <div>
-                <button className="text-2xl p-2 bg-zinc-600 w-36 text-center rounded-xl hover:font-bold" style={{ backgroundColor: `#${pageColor}` }} onClick={() => setNewNoteDisplay(!newNoteDisplay)}>New Note</button>
+                <button className="text-2xl p-2 bg-zinc-600 w-36 text-center rounded-xl transition duration-150 ease-in hover:scale-105" style={{ backgroundColor: `#${pageColor}` }} onClick={() => setNewNoteDisplay(!newNoteDisplay)}>New Note</button>
             </div>
         </div>
     );
