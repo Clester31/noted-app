@@ -7,7 +7,7 @@ interface MarkdownEditorProps {
     updateNoteContent: (formattedContent: string, rawContent: string) => void;
 }
 
-export default function MarkdownEditor({ color, content, updateNoteContent }: MarkdownEditorProps) {
+export default function MarkdownEditorOld({ color, content, updateNoteContent }: MarkdownEditorProps) {
     // Initialize state with the passed raw content
     const [text, setText] = useState<string>(content || ""); // Set default empty string if content is undefined or null
     const [previewText, setPreviewText] = useState<string>("");
@@ -22,7 +22,7 @@ export default function MarkdownEditor({ color, content, updateNoteContent }: Ma
         const lines = newText.split('\n');
 
         const formattedLines = lines.map((line) => {
-            const leadingSpaces = line.match(/^\s*/)[0].length; 
+            const leadingSpaces = line.match(/^\s*/)[0].length;
             const invisibleChars = '&nbsp;'.repeat(leadingSpaces);
 
             if (line.trim() === "") {
@@ -33,8 +33,8 @@ export default function MarkdownEditor({ color, content, updateNoteContent }: Ma
                 fontSize = Math.max(fontSize, 16); // Set a minimum font size limit
                 const headingLevel = Math.min(hashCount, 6); // Maximum heading level is h6
                 return `<h${headingLevel} style="font-size: ${fontSize}px;">${line.slice(hashCount).trim()}</h${headingLevel}>`;
-            } else if (line.startsWith('* ')) {
-                return `<p>• ${line.slice(2)}</p>`
+            } else if (line.match(/^\s*\* /)) {
+                return `<p>${invisibleChars}• ${line.trim().slice(2)}</p>`;
             } else if (line.startsWith(' ')) {
                 return `<p>${invisibleChars}${line.slice(1)}</p>`;
             } else {
@@ -69,11 +69,35 @@ export default function MarkdownEditor({ color, content, updateNoteContent }: Ma
                             onKeyDown={(e) => {
                                 if (e.key === 'Tab') {
                                     e.preventDefault(); 
-                                    const newText = text.substring(0) + '     ' + text.substring(text.length);
+                                    const cursorPosition = e.target.selectionStart; 
+                                    const textBeforeCursor = text.substring(0, cursorPosition); 
+                                    const textAfterCursor = text.substring(cursorPosition); 
+                                    const spaces = '       '; 
+                                    // Insert seven spaces at the cursor position
+                                    const newText = textBeforeCursor + spaces + textAfterCursor;
                                     setText(newText);
                                     updatePreview(newText);
+
+                                    // Move the cursor to the correct position after the inserted spaces
+                                    setTimeout(() => {
+                                        e.target.selectionStart = e.target.selectionEnd = cursorPosition + spaces.length;
+                                    }, 0);
+                                } if (e.key === 'Enter') {
+                                    const cursorPosition = e.target.selectionStart;
+                                    const textBeforeCursor = text.substring(0, cursorPosition);
+                                    const currentLine = textBeforeCursor.split('\n').pop(); // Get the current line of text
+
+                                    if (currentLine.startsWith('* ')) {
+                                        e.preventDefault(); 
+                                        const newText = textBeforeCursor + '\n* ' + text.substring(cursorPosition);
+                                        setText(newText);
+                                        updatePreview(newText);
+                                        setTimeout(() => {
+                                            e.target.selectionStart = e.target.selectionEnd = cursorPosition + 3;
+                                        }, 0);
+                                    }
                                 }
-                            }}                   
+                            }}
                         ></textarea>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ type Note = {
 }
 
 
-import MarkdownEditor from "@/app/components/notesEditor/MarkdownEditor";
+import MarkdownEditorOld from "@/app/components/notesEditor/MarkdownEditorOld";
 import { useAppContext } from "@/app/context/context";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -49,7 +49,7 @@ export default function FullNote() {
     return (
         <div>
             <h1 className="text-4xl">{currentNotes.name}</h1>
-            <MarkdownEditor 
+            <MarkdownEditorOld 
             content={currentNotes.rawContent}
             color={currentNotes.color} 
             updateNoteContent={updateNoteContent}
